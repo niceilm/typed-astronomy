@@ -34,14 +34,14 @@ declare module 'meteor/jagi:astronomy' {
     transient?: boolean;
     immutable?: boolean;
     optional?: boolean;
-    index?: number|string;
+    index?: number | string;
   }
 
-  interface AstronomyEvent {
+  interface AstronomyEvent<T> {
     // If it was initiated on the server that it’s “trusted” if on the client then it’s not and we should validate user’s permissions
     trusted: boolean;
-    currentTarget: any | Class;
-    target: any | Class;
+    currentTarget: T;
+    target: T;
     type: string;
     timeStamp: number;
     stopPropagation: () => void;
@@ -55,36 +55,36 @@ declare module 'meteor/jagi:astronomy' {
     result?: any;
   }
 
-  interface EventCallback {
-    (event: AstronomyEvent): void;
+  interface EventCallback<T> {
+    (event: AstronomyEvent<T>): void;
   }
 
   interface ClassDefinition<T> {
     name?: string;
-    fields?: {[key: string]: ClassFieldOption|any};
-    collection?: Mongo.Collection< T >;
+    fields?: { [key: string]: ClassFieldOption | any };
+    collection?: Mongo.Collection<T>;
     identifiers?: any;
     behaviors?: any;
-    indexes?: {[key: string]: {fields: {[key: string]: number|string}; options?: any}};
-    secured?: boolean|{update?: boolean;remove?: boolean;insert?: boolean;};
+    indexes?: { [key: string]: { fields: { [key: string]: number | string }; options?: any } };
+    secured?: boolean | { update?: boolean; remove?: boolean; insert?: boolean; };
     helpers?: any,
     methods?: any,
     meteorMethods?: any,
     events?: {
-      beforeInit?: EventCallback | EventCallback[];
-      afterInit?: EventCallback | EventCallback[];
-      beforeSave?: EventCallback | EventCallback[];
-      afterSave?: EventCallback | EventCallback[];
-      beforeInsert?: EventCallback | EventCallback[];
-      afterInsert?: EventCallback | EventCallback[];
-      beforeUpdate?: EventCallback | EventCallback[];
-      afterUpdate?: EventCallback | EventCallback[];
-      beforeRemove?: EventCallback | EventCallback[];
-      afterRemove?: EventCallback | EventCallback[];
-      beforeFind?: EventCallback | EventCallback[];
-      afterFind?: EventCallback | EventCallback[];
-      toJSONValue?: EventCallback | EventCallback[];
-      fromJSONValue?: EventCallback | EventCallback[];
+      beforeInit?: EventCallback<T> | EventCallback<T>[];
+      afterInit?: EventCallback<T> | EventCallback<T>[];
+      beforeSave?: EventCallback<T> | EventCallback<T>[];
+      afterSave?: EventCallback<T> | EventCallback<T>[];
+      beforeInsert?: EventCallback<T> | EventCallback<T>[];
+      afterInsert?: EventCallback<T> | EventCallback<T>[];
+      beforeUpdate?: EventCallback<T> | EventCallback<T>[];
+      afterUpdate?: EventCallback<T> | EventCallback<T>[];
+      beforeRemove?: EventCallback<T> | EventCallback<T>[];
+      afterRemove?: EventCallback<T> | EventCallback<T>[];
+      beforeFind?: EventCallback<T> | EventCallback<T>[];
+      afterFind?: EventCallback<T> | EventCallback<T>[];
+      toJSONValue?: EventCallback<T> | EventCallback<T>[];
+      fromJSONValue?: EventCallback<T> | EventCallback<T>[];
     }
   }
 
@@ -151,32 +151,32 @@ declare module 'meteor/jagi:astronomy' {
     typeName?(): string;
     toJSONValue?(args: any): any;
     save?(args?: any | ResultCallback, callback?: ResultCallback): any;
-    remove?(args?: {simulation?: boolean} | ResultCallback, callback?: ResultCallback): any;
+    remove?(args?: { simulation?: boolean } | ResultCallback, callback?: ResultCallback): any;
     reload?(): void;
     copy?(save?: boolean): this;
-    set?(field: any, value?: any|ClassSetOption, options?: ClassSetOption): void;
+    set?(field: any, value?: any | ClassSetOption, options?: ClassSetOption): void;
     getModifier?(): any;
     getModified?(): string[];
-    getModifiedValues?(options?: {old: boolean;raw: boolean}): {[name: string]: any};
+    getModifiedValues?(options?: { old: boolean; raw: boolean }): { [name: string]: any };
     isModified?(pattern?: any): boolean;
     get?(fieldName?: string | string[]): any;
-    getFieldNames?(options?: {transient?: boolean, immutable?: boolean}): string[];
+    getFieldNames?(options?: { transient?: boolean, immutable?: boolean }): string[];
     raw?(fieldName?: string | string[]): any;
-    validate?(args?: {fields?: string[];stopOnFirstError?: boolean;simulation?: boolean} | ResultCallback, callback?: ResultCallback): any;
+    validate?(args?: { fields?: string[]; stopOnFirstError?: boolean; simulation?: boolean } | ResultCallback, callback?: ResultCallback): any;
     validateAll?(fieldName?: string | string[]): any;
   }
 
   interface ClassStatic {
-    create<T>(definition: ClassDefinition< T >): ClassStaticByCreated<T>;
+    create<T>(definition: ClassDefinition<T>): ClassStaticByCreated<T>;
   }
 
-  interface ClassStaticByCreated< T > extends Mongo.Collection< T > {
+  interface ClassStaticByCreated<T> extends Mongo.Collection<T> {
     new(rawDoc?: any, options?: any): T;
     getName(): string;
     getParent(): ClassStaticByCreated<any>;
     getChildren(): ClassStaticByCreated<any>;
-    inherit(definition: ClassDefinition <T>): ClassStaticByCreated<any>;
-    extend(extendDefinition: ClassDefinition <T>, onlyModules?: any): void;
+    inherit(definition: ClassDefinition<T>): ClassStaticByCreated<any>;
+    extend(extendDefinition: ClassDefinition<T>, onlyModules?: any): void;
     get(className: string): ClassStaticByCreated<any>;
     has(className: string): boolean;
     includes(classTarget: ClassStaticByCreated<any>): boolean;
@@ -187,19 +187,19 @@ declare module 'meteor/jagi:astronomy' {
     getFields(): Field[];
     getObjectFields(): Field[];
     getListFields(classOnly: boolean): Field[];
-    getCollection(): Mongo.Collection < T >;
+    getCollection(): Mongo.Collection<T>;
     getScalarFields(): Field[];
     hasField(fieldName: string): boolean;
     getResolveError(): ValidateResolveErrorParamArgs;
     getValidationOrder(): string[];
     getValidators(fieldName?: string): Validator[];
-    validate(rawDoc: any, args?: {fields?: string[]; stopOnFirstError?: boolean; simulation?: boolean} | ResultCallback, callback?: ResultCallback): any;
-    validateAll(rawDoc: any, args?: {fields?: string[]; stopOnFirstError?: boolean; simulation?: boolean} | ResultCallback, callback?: ResultCallback): boolean;
+    validate(rawDoc: any, args?: { fields?: string[]; stopOnFirstError?: boolean; simulation?: boolean } | ResultCallback, callback?: ResultCallback): any;
+    validateAll(rawDoc: any, args?: { fields?: string[]; stopOnFirstError?: boolean; simulation?: boolean } | ResultCallback, callback?: ResultCallback): boolean;
     getCheckPattern(): any;
   }
 
   interface EnumStatic {
-    create(option: { name: string; identifiers: any[] | {[key: string]: any}; }): Enum;
+    create(option: { name: string; identifiers: any[] | { [key: string]: any }; }): Enum;
   }
 
   interface Enum {
@@ -245,7 +245,7 @@ declare module 'meteor/jagi:astronomy' {
 
   interface BehaviorStatic {
     new(options?: any): Behavior;
-    create(definition: {name: string;}): BehaviorStatic;
+    create(definition: { name: string; }): BehaviorStatic;
     get(behaviorName: string): BehaviorStatic;
     has(behaviorName: string): boolean;
   }
@@ -265,7 +265,7 @@ declare module 'meteor/jagi:astronomy' {
         onParseDefinition?: Function;
         onApplyDefinition?: Function;
         onMergeDefinitions?: Function;
-        utils?: {[methodName: string]: Function};
+        utils?: { [methodName: string]: Function };
       }): Module;
     create(definition: any): ModuleStatic;
     get(moduleName: string): ModuleStatic;
@@ -291,7 +291,7 @@ declare module 'meteor/jagi:astronomy' {
   const ListField: FieldStatic;
   const Behavior: BehaviorStatic;
   const Validator: ValidatorStatic;
-  const Validators: {[type: string]: (options: any) => void};
+  const Validators: { [type: string]: (options: any) => void };
   const ValidationError: ValidationErrorStatic;
   const Event: EventStatic;
   const reservedKeywords: string[];
